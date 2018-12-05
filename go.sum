@@ -1,5 +1,5 @@
-github.com/heindrichpaul/deckOfCards v0.0.3 h1:zaYcP5yz0t9KFBnUtHgzz5ARKGjkeUSwU5UfKnUmQAM=
-github.com/heindrichpaul/deckOfCards v0.0.3/go.mod h1:Gzs3+U9vbw4lGq0FpyFh+Gi2om+HLVh2R9M0gWR+cgo=
+github.com/heindrichpaul/deckofcards v0.0.8 h1:9UQ+Wh/iutD3T6BzFfIzGjQB8Xl/C1JDcRmLiiQ/I4Q=
+github.com/heindrichpaul/deckofcards v0.0.8/go.mod h1:ftvA03hMh16Mn0ln9y+vTDOjj/9k8lh1ruyKo2Akt+k=
 github.com/json-iterator/go v1.1.5 h1:gL2yXlmiIo4+t+y32d4WGwOjKGYcGOuyrg46vadswDE=
 github.com/json-iterator/go v1.1.5/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
