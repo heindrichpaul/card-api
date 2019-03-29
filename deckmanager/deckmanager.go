@@ -22,16 +22,16 @@ func RequestNumberOfShuffledDecks(number int) *deckofcards.Deck {
 	return deck
 }
 
-func RequestNumberOfDecksWithJockers(number int) *deckofcards.Deck {
-	deck := deckofcards.NewDeckWithJockers(number)
+func RequestNumberOfDecksWithJokers(number int) *deckofcards.Deck {
+	deck := deckofcards.NewDeckWithJokers(number)
 	if deck.Success {
 		decks[deck.DeckID] = deck
 	}
 	return deck
 }
 
-func RequestNumberOfShuffledDecksWithJockers(number int) *deckofcards.Deck {
-	deck := RequestNumberOfDecksWithJockers(number)
+func RequestNumberOfShuffledDecksWithJokers(number int) *deckofcards.Deck {
+	deck := RequestNumberOfDecksWithJokers(number)
 	if deck.Success {
 		deck = deckofcards.ShuffleDeck(deck)
 		decks[deck.DeckID] = deck
