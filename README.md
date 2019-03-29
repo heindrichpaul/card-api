@@ -1,4 +1,4 @@
-# card-api [![Build Status](https://www.travis-ci.com/heindrichpaul/card-api.svg?branch=master)](https://www.travis-ci.com/heindrichpaul/card-api) [![codecov](https://codecov.io/gh/heindrichpaul/card-api/branch/master/graph/badge.svg)](https://codecov.io/gh/heindrichpaul/card-api) [![Go Report Card](https://goreportcard.com/badge/github.com/heindrichpaul/card-api)](https://goreportcard.com/report/github.com/heindrichpaul/card-api)
+# card-api [![Build Status](https://www.travis-ci.com/heindrichpaul/card-api.svg?branch=master)](https://www.travis-ci.com/heindrichpaul/card-api)[![codecov](https://codecov.io/gh/heindrichpaul/card-api/branch/master/graph/badge.svg)](https://codecov.io/gh/heindrichpaul/card-api)[![Go Report Card](https://goreportcard.com/badge/github.com/heindrichpaul/card-api)](https://goreportcard.com/report/github.com/heindrichpaul/card-api)
 A Deck API written in Go based upon https://github.com/crobertsbmw/
 
 The implementation that https://github.com/crobertsbmw/ gave was excellent but I needed support for Jockers
