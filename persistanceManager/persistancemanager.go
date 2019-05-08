@@ -7,13 +7,10 @@ type PersistanceManage struct {
 	decks map[string]*deckofcards.Deck
 }
 
-var piles map[string]*deckofcards.Pile
-var decks map[string]*deckofcards.Deck
-
 func NewPersistanceManager() *PersistanceManage {
 	p := &PersistanceManage{
-		piles: make(map[string]*deckofcards.Pile, 0),
-		decks: make(map[string]*deckofcards.Deck, 0),
+		piles: make(map[string]*deckofcards.Pile),
+		decks: make(map[string]*deckofcards.Deck),
 	}
 	return p
 }
