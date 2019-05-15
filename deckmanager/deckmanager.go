@@ -1,65 +1,86 @@
 package deckmanager
 
-import "github.com/heindrichpaul/deckofcards"
+import (
+	persistancemanager "github.com/heindrichpaul/card-api/persistanceManager"
+	"github.com/heindrichpaul/deckofcards"
+)
 
-var decks map[string]*deckofcards.Deck
-var piles map[string]*deckofcards.Pile
+type DeckManager struct {
+	persistanceManger *persistancemanager.PersistanceManage
+}
 
-func RequestNumberOfDecks(number int) *deckofcards.Deck {
+func NewDeckManager() *DeckManager {
+	d := &DeckManager{
+		persistanceManger: persistancemanager.NewPersistanceManager(),
+	}
+	return d
+}
+
+func (z *DeckManager) RequestNumberOfDecks(number int) *deckofcards.Deck {
 	deck := deckofcards.NewDeck(number)
 	if deck.Success {
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 }
 
-func RequestNumberOfShuffledDecks(number int) *deckofcards.Deck {
-	deck := RequestNumberOfDecks(number)
+func (z *DeckManager) RequestNumberOfShuffledDecks(number int) *deckofcards.Deck {
+	deck := z.RequestNumberOfDecks(number)
 	if deck.Success {
 		deck = deckofcards.ShuffleDeck(deck)
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 }
 
-func RequestNumberOfDecksWithJokers(number int) *deckofcards.Deck {
+func (z *DeckManager) RequestNumberOfDecksWithJokers(number int) *deckofcards.Deck {
 	deck := deckofcards.NewDeckWithJokers(number)
 	if deck.Success {
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 }
 
-func RequestNumberOfShuffledDecksWithJokers(number int) *deckofcards.Deck {
-	deck := RequestNumberOfDecksWithJokers(number)
+func (z *DeckManager) RequestNumberOfShuffledDecksWithJokers(number int) *deckofcards.Deck {
+	deck := z.RequestNumberOfDecksWithJokers(number)
 	if deck.Success {
 		deck = deckofcards.ShuffleDeck(deck)
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 }
 
-func ReshuffleDeck(deck *deckofcards.Deck) *deckofcards.Deck {
+func (z *DeckManager) ReshuffleDeck(deck *deckofcards.Deck) *deckofcards.Deck {
 	deck = deckofcards.ShuffleDeck(deck)
 	if deck.Success {
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 
 }
 
-func RequestSingleUnshuffledDeck() *deckofcards.Deck {
+func (z *DeckManager) RequestSingleUnshuffledDeck() *deckofcards.Deck {
 	deck := deckofcards.NewDeck(1)
 	if deck.Success {
-		decks[deck.DeckID] = deck
+		z.persistanceManger.PersistDeck(deck)
 	}
 	return deck
 }
 
-func FindDeckById(Id string) *deckofcards.Deck {
-	deck, ok := decks[Id]
+func (z *DeckManager) FindDeckById(Id string) *deckofcards.Deck {
+	deck, ok := z.persistanceManger.RetrieveDeck(Id)
 	if !ok {
 		return nil
 	}
 	return deck
+}
+
+func (z *DeckManager) DrawFromDeck(Id string, amount int) *deckofcards.Draw {
+	deck, ok := z.persistanceManger.RetrieveDeck(Id)
+	defer z.persistanceManger.PersistDeck(deck)
+	if !ok {
+		return nil
+	}
+	draw := deck.Draw(amount)
+	return draw
 }
