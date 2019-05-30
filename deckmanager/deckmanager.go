@@ -59,14 +59,6 @@ func (z *DeckManager) ReshuffleDeck(deck *deckofcards.Deck) *deckofcards.Deck {
 
 }
 
-func (z *DeckManager) RequestSingleUnshuffledDeck() *deckofcards.Deck {
-	deck := deckofcards.NewDeck(1)
-	if deck.Success {
-		z.persistanceManger.PersistDeck(deck)
-	}
-	return deck
-}
-
 func (z *DeckManager) FindDeckById(Id string) *deckofcards.Deck {
 	deck, ok := z.persistanceManger.RetrieveDeck(Id)
 	if !ok {
@@ -83,4 +75,9 @@ func (z *DeckManager) DrawFromDeck(Id string, amount int) *deckofcards.Draw {
 	}
 	draw := deck.Draw(amount)
 	return draw
+}
+
+func (z *DeckManager) DoesDeckExist(Id string) bool {
+	_, ok := z.persistanceManger.RetrieveDeck(Id)
+	return ok
 }

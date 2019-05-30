@@ -8,6 +8,8 @@ github.com/heindrichpaul/deckofcards v1.0.2 h1:k+TPVCsl0WDZolXgkO8dHqClxdmnm3+L0
 github.com/heindrichpaul/deckofcards v1.0.2/go.mod h1:ftvA03hMh16Mn0ln9y+vTDOjj/9k8lh1ruyKo2Akt+k=
 github.com/heindrichpaul/deckofcards v1.1.0 h1:kdvvAPOpLt79b602k25ixHTF3pZzsFjZXO24sd0RGP0=
 github.com/heindrichpaul/deckofcards v1.1.0/go.mod h1:nPh1gnsFNC8xRZuu5Mai4hDRK0OqaUXO6VKSSagtVv8=
+github.com/heindrichpaul/deckofcards v1.1.1 h1:h6clCEXe0I6AbEHEm24LIgUmZJo2MlRH4Uh/GxRj9Yw=
+github.com/heindrichpaul/deckofcards v1.1.1/go.mod h1:nPh1gnsFNC8xRZuu5Mai4hDRK0OqaUXO6VKSSagtVv8=
 github.com/json-iterator/go v1.1.5 h1:gL2yXlmiIo4+t+y32d4WGwOjKGYcGOuyrg46vadswDE=
 github.com/json-iterator/go v1.1.5/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.6 h1:MrUvLMLTMxbqFJ9kzlvat/rYZqZnW3u4wkLzWTaFwKs=
