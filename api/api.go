@@ -61,7 +61,3 @@ func getIntWithDefaultValueAs1(v url.Values, key string) int {
 	}
 	return number
 }
-
-func getStringValue(v url.Values, key string) string {
-	return v.Get(key)
-}
