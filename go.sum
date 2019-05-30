@@ -2,16 +2,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/gorilla/mux v1.7.0 h1:tOSd0UKHQd6urX6ApfOn4XdBMY6Sh1MfxV3kmaazO+U=
 github.com/gorilla/mux v1.7.0/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
-github.com/heindrichpaul/deckofcards v1.0.0 h1:SzBnNeIr245TkBqQpM0WHMCzPJ/1xaODC5SiYCUSUws=
-github.com/heindrichpaul/deckofcards v1.0.0/go.mod h1:ftvA03hMh16Mn0ln9y+vTDOjj/9k8lh1ruyKo2Akt+k=
-github.com/heindrichpaul/deckofcards v1.0.2 h1:k+TPVCsl0WDZolXgkO8dHqClxdmnm3+L0CTjTvaweOc=
-github.com/heindrichpaul/deckofcards v1.0.2/go.mod h1:ftvA03hMh16Mn0ln9y+vTDOjj/9k8lh1ruyKo2Akt+k=
-github.com/heindrichpaul/deckofcards v1.1.0 h1:kdvvAPOpLt79b602k25ixHTF3pZzsFjZXO24sd0RGP0=
-github.com/heindrichpaul/deckofcards v1.1.0/go.mod h1:nPh1gnsFNC8xRZuu5Mai4hDRK0OqaUXO6VKSSagtVv8=
 github.com/heindrichpaul/deckofcards v1.1.1 h1:h6clCEXe0I6AbEHEm24LIgUmZJo2MlRH4Uh/GxRj9Yw=
 github.com/heindrichpaul/deckofcards v1.1.1/go.mod h1:nPh1gnsFNC8xRZuu5Mai4hDRK0OqaUXO6VKSSagtVv8=
-github.com/json-iterator/go v1.1.5 h1:gL2yXlmiIo4+t+y32d4WGwOjKGYcGOuyrg46vadswDE=
-github.com/json-iterator/go v1.1.5/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/json-iterator/go v1.1.6 h1:MrUvLMLTMxbqFJ9kzlvat/rYZqZnW3u4wkLzWTaFwKs=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=
