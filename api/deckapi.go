@@ -41,28 +41,20 @@ func (z *deckAPI) register() {
 
 func (z *deckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	amountOfDecks := getIntWithDefaultValueAs1(r.URL.Query(), "amount")
-	jockers := getBooleanValue(r.URL.Query(), "jockers")
+	jokers := getBooleanValue(r.URL.Query(), "jokers")
 	shuffle := getBooleanValue(r.URL.Query(), "shuffle")
-
 	var deck *deckofcards.Deck
-
-	switch {
-	case shuffle && jockers:
-		deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amountOfDecks)
-	case shuffle && !jockers:
-		deck = z.deckManager.RequestNumberOfShuffledDecks(amountOfDecks)
-	case !shuffle && jockers:
-		deck = z.deckManager.RequestNumberOfDecksWithJokers(amountOfDecks)
-	default:
-		deck = z.deckManager.RequestNumberOfDecks(amountOfDecks)
+	if shuffle {
+		deck = z.createShuffledDeck(amountOfDecks, jokers)
+	} else {
+		deck = z.createUnshuffledDeck(amountOfDecks, jokers)
 	}
 
 	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-	if !ok {
-		return
+	if ok {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, deckJSON)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, deckJSON)
 }
 
 func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
@@ -75,11 +67,10 @@ func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-	if !ok {
-		return
+	if ok {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, deckJSON)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, deckJSON)
 }
 
 func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
@@ -94,11 +85,10 @@ func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 	deck = z.deckManager.ReshuffleDeck(deck)
 
 	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-	if !ok {
-		return
+	if ok {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, deckJSON)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, deckJSON)
 }
 
 func (z *deckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
@@ -144,4 +134,22 @@ func (z *deckAPI) marshalDeckAndValidate(w http.ResponseWriter, r *http.Request,
 		return "", false
 	}
 	return string(deckJSON), true
+}
+
+func (z *deckAPI) createUnshuffledDeck(amount int, jokers bool) (deck *deckofcards.Deck) {
+	if jokers {
+		deck = z.deckManager.RequestNumberOfDecksWithJokers(amount)
+	} else {
+		deck = z.deckManager.RequestNumberOfDecks(amount)
+	}
+	return deck
+}
+
+func (z *deckAPI) createShuffledDeck(amount int, jokers bool) (deck *deckofcards.Deck) {
+	if jokers {
+		deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amount)
+	} else {
+		deck = z.deckManager.RequestNumberOfShuffledDecks(amount)
+	}
+	return deck
 }
