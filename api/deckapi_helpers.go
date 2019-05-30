@@ -3,7 +3,9 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/deckofcards"
 )
 
@@ -54,9 +56,25 @@ func (z *deckAPI) marshalDeckAndValidate(w http.ResponseWriter, r *http.Request,
 	return string(deckJSON), true
 }
 
-func getQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
+func (z *deckAPI) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
 	amount = getIntWithDefaultValueAs1(r.URL.Query(), "amount")
 	jokers = getBooleanValue(r.URL.Query(), "jokers")
 	shuffle = getBooleanValue(r.URL.Query(), "shuffle")
+	return
+}
+
+func (z *deckAPI) getIdFromRequest(r *http.Request) (id string) {
+	vars := mux.Vars(r)
+	id = vars["id"]
+	return
+}
+
+func (z *deckAPI) getDrawValuesFromRequest(r *http.Request) (id string, amount int) {
+	vars := mux.Vars(r)
+	id = vars["id"]
+	amount, err := strconv.Atoi(vars["amount"])
+	if err != nil {
+		amount = 1
+	}
 	return
 }

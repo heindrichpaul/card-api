@@ -3,7 +3,6 @@ package api
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/deckmanager"
@@ -51,7 +50,7 @@ func (z *deckAPI) registerUnshuffledPaths() {
 }
 
 func (z *deckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
-	deck := z.createDeck(getQueryValues(r))
+	deck := z.createDeck(z.getNewDeckQueryValues(r))
 
 	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 	if ok {
@@ -61,10 +60,7 @@ func (z *deckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	deck, ok := z.findAndValidateDeck(w, r, id)
+	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
 	if !ok {
 		return
 	}
@@ -78,10 +74,7 @@ func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-
-	deck, ok := z.findAndValidateDeck(w, r, id)
+	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
 	if !ok {
 		return
 	}
@@ -97,12 +90,8 @@ func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *deckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id := vars["id"]
-	amount, err := strconv.Atoi(vars["amount"])
-	if err != nil {
-		amount = 1
-	}
+
+	id, amount := z.getDrawValuesFromRequest(r)
 
 	_, ok := z.findAndValidateDeck(w, r, id)
 	if !ok {
@@ -119,5 +108,4 @@ func (z *deckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, string(drawJSON))
-
 }
