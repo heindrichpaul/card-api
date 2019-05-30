@@ -44,20 +44,20 @@ func (z *pileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 
-	deck := z.deckManager.FindDeckById(id)
-	if deck == nil {
-		e := newAPIError(fmt.Sprintf("Could not find deck with id: %s", id), "1")
+	pile := z.deckManager.FindPileById(id)
+	if pile == nil {
+		e := newAPIError(fmt.Sprintf("Could not find pile with id: %s", id), "1")
 		handleError(w, r, e)
 		return
 	}
 
-	deckJSON, err := deck.Marshal()
+	pileJSON, err := pile.Marshal()
 	if err != nil {
-		e := newAPIError("Could not marshal deck", "1")
+		e := newAPIError("Could not marshal pile", "1")
 		handleError(w, r, e)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(deckJSON))
+	fmt.Fprintf(w, string(pileJSON))
 
 }
