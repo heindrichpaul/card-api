@@ -99,23 +99,21 @@ func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
-	id := vars["id"]
 	amount, err := strconv.Atoi(vars["amount"])
 	if err != nil {
 		amount = 1
 	}
 
-	_, ok := z.findAndValidateDeck(w, r, id)
-	if !ok {
+	if !z.deckManager.DoesDeckExist(vars["id"]) {
+		apiutilities.HandleError(w, r, apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), "1"))
 		return
 	}
 
-	draw := z.deckManager.DrawFromDeck(id, amount)
+	draw := z.deckManager.DrawFromDeck(vars["id"], amount)
 
 	drawJSON, err := draw.Marshal()
 	if err != nil {
-		e := apiutilities.NewAPIError("Could not marshal draw", "1")
-		apiutilities.HandleError(w, r, e)
+		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal draw", "1"))
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

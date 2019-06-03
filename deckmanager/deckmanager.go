@@ -76,3 +76,8 @@ func (z *DeckManager) DrawFromDeck(Id string, amount int) *deckofcards.Draw {
 	draw := deck.Draw(amount)
 	return draw
 }
+
+func (z *DeckManager) DoesDeckExist(Id string) bool {
+	_, ok := z.persistanceManger.RetrieveDeck(Id)
+	return ok
+}
