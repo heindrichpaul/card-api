@@ -1,18 +1,30 @@
-package deckmanager
+package pilemanager
 
 import (
 	"fmt"
 
+	persistancemanager "github.com/heindrichpaul/card-api/persistanceManager"
 	"github.com/heindrichpaul/deckofcards"
 )
 
-func (z *DeckManager) RequestNewPile() *deckofcards.Pile {
+type PileManager struct {
+	persistanceManger *persistancemanager.PersistanceManage
+}
+
+func NewPileManager(p *persistancemanager.PersistanceManage) *PileManager {
+	d := &PileManager{
+		persistanceManger: p,
+	}
+	return d
+}
+
+func (z *PileManager) RequestNewPile() *deckofcards.Pile {
 	pile := deckofcards.NewPile()
 	z.persistanceManger.PersistPile(pile)
 	return pile
 }
 
-func (z *DeckManager) ShufflePile(Id string) *deckofcards.Pile {
+func (z *PileManager) ShufflePile(Id string) *deckofcards.Pile {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -22,7 +34,7 @@ func (z *DeckManager) ShufflePile(Id string) *deckofcards.Pile {
 	return pile
 }
 
-func (z *DeckManager) AddCardsToPile(Id string, draw *deckofcards.Draw, cards deckofcards.Cards) {
+func (z *PileManager) AddCardsToPile(Id string, draw *deckofcards.Draw, cards deckofcards.Cards) {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if ok {
 		defer z.persistanceManger.PersistPile(pile)
@@ -30,7 +42,7 @@ func (z *DeckManager) AddCardsToPile(Id string, draw *deckofcards.Draw, cards de
 	}
 }
 
-func (z *DeckManager) GetCardAtIDFromPile(Id string, index int) (*deckofcards.Draw, error) {
+func (z *PileManager) GetCardAtIDFromPile(Id string, index int) (*deckofcards.Draw, error) {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil, fmt.Errorf("Unable to retrieve the pile")
@@ -39,7 +51,7 @@ func (z *DeckManager) GetCardAtIDFromPile(Id string, index int) (*deckofcards.Dr
 	return pile.GetCardAtID(index)
 }
 
-func (z *DeckManager) GetCardsFromPile(Id string, cards deckofcards.Cards) *deckofcards.Draw {
+func (z *PileManager) GetCardsFromPile(Id string, cards deckofcards.Cards) *deckofcards.Draw {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -48,7 +60,7 @@ func (z *DeckManager) GetCardsFromPile(Id string, cards deckofcards.Cards) *deck
 	return pile.GetCardsFromPile(cards)
 }
 
-func (z *DeckManager) PickAllCardsFromPile(Id string) *deckofcards.Draw {
+func (z *PileManager) PickAllCardsFromPile(Id string) *deckofcards.Draw {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -57,7 +69,7 @@ func (z *DeckManager) PickAllCardsFromPile(Id string) *deckofcards.Draw {
 	return pile.PickAllCardsFromPile()
 }
 
-func (z *DeckManager) PickAmountOfCardsFromBottomOfPile(Id string, amount int) *deckofcards.Draw {
+func (z *PileManager) PickAmountOfCardsFromBottomOfPile(Id string, amount int) *deckofcards.Draw {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -66,7 +78,7 @@ func (z *DeckManager) PickAmountOfCardsFromBottomOfPile(Id string, amount int) *
 	return pile.PickAmountOfCardsFromBottomOfPile(amount)
 }
 
-func (z *DeckManager) PickAmountOfCardsFromBTopOfPile(Id string, amount int) *deckofcards.Draw {
+func (z *PileManager) PickAmountOfCardsFromBTopOfPile(Id string, amount int) *deckofcards.Draw {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -75,7 +87,7 @@ func (z *DeckManager) PickAmountOfCardsFromBTopOfPile(Id string, amount int) *de
 	return pile.PickAmountOfCardsFromTopOfPile(amount)
 }
 
-func (z *DeckManager) RetrieveCardsInPile(Id string) deckofcards.Cards {
+func (z *PileManager) RetrieveCardsInPile(Id string) deckofcards.Cards {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil
@@ -84,7 +96,7 @@ func (z *DeckManager) RetrieveCardsInPile(Id string) deckofcards.Cards {
 	return pile.RetrieveCardsInPile()
 }
 
-func (z *DeckManager) FindPileById(Id string) *deckofcards.Pile {
+func (z *PileManager) FindPileById(Id string) *deckofcards.Pile {
 	pile, ok := z.persistanceManger.RetrievePile(Id)
 	if !ok {
 		return nil

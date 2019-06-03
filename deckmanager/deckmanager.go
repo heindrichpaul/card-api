@@ -9,9 +9,9 @@ type DeckManager struct {
 	persistanceManger *persistancemanager.PersistanceManage
 }
 
-func NewDeckManager() *DeckManager {
+func NewDeckManager(p *persistancemanager.PersistanceManage) *DeckManager {
 	d := &DeckManager{
-		persistanceManger: persistancemanager.NewPersistanceManager(),
+		persistanceManger: p,
 	}
 	return d
 }

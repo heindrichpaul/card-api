@@ -1,20 +1,21 @@
-package api
+package deckapi
 
 import (
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/heindrichpaul/card-api/apiutilities"
 	"github.com/heindrichpaul/card-api/deckmanager"
 )
 
-type deckAPI struct {
+type DeckAPI struct {
 	router      *mux.Router
 	deckManager *deckmanager.DeckManager
 }
 
-func newDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *deckAPI {
-	dAPI := &deckAPI{
+func NewDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *DeckAPI {
+	dAPI := &DeckAPI{
 		router:      mux.PathPrefix("/deck").Subrouter(),
 		deckManager: deckM,
 	}
@@ -22,7 +23,7 @@ func newDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *deckAPI {
 	return dAPI
 }
 
-func (z *deckAPI) register() {
+func (z *DeckAPI) Register() {
 	z.registerNewPaths()
 
 	z.router.Path("/{id}").Methods("GET").HandlerFunc(z.retrieveDeckHandler)
@@ -30,26 +31,26 @@ func (z *deckAPI) register() {
 	z.router.Path("/shuffle/{id}").Methods("POST").HandlerFunc(z.shuffleHandler)
 }
 
-func (z *deckAPI) registerNewPaths() {
+func (z *DeckAPI) registerNewPaths() {
 	z.registerShufflePaths()
 	z.registerUnshuffledPaths()
 }
 
-func (z *deckAPI) registerShufflePaths() {
+func (z *DeckAPI) registerShufflePaths() {
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
 }
 
-func (z *deckAPI) registerUnshuffledPaths() {
+func (z *DeckAPI) registerUnshuffledPaths() {
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler)
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
 	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
 }
 
-func (z *deckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
+func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck := z.createDeck(z.getNewDeckQueryValues(r))
 
 	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
@@ -59,7 +60,7 @@ func (z *deckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
+func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
 	if !ok {
 		return
@@ -73,7 +74,7 @@ func (z *deckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
+func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
 	if !ok {
 		return
@@ -89,7 +90,7 @@ func (z *deckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (z *deckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
+func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, amount := z.getDrawValuesFromRequest(r)
 
@@ -102,8 +103,8 @@ func (z *deckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 	drawJSON, err := draw.Marshal()
 	if err != nil {
-		e := newAPIError("Could not marshal draw", "1")
-		handleError(w, r, e)
+		e := apiutilities.NewAPIError("Could not marshal draw", "1")
+		apiutilities.HandleError(w, r, e)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

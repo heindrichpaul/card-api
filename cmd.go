@@ -7,12 +7,8 @@ import (
 	"github.com/rs/cors"
 )
 
-var (
-	logErrors = false
-)
-
 func main() {
-	mux := api.NewAPI(logErrors)
+	mux := api.NewAPI()
 	handler := cors.Default().Handler(mux.Router)
 	http.ListenAndServe(":8080", handler)
 }
