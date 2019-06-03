@@ -25,7 +25,6 @@ func NewDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *DeckAPI {
 
 	dAPI.getRoute = dAPI.router.Methods("GET")
 	dAPI.getRoute = dAPI.router.Methods("POST")
-
 	return dAPI
 }
 
@@ -68,32 +67,27 @@ func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
-	if !ok {
-		return
-	}
-
-	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 	if ok {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, deckJSON)
-	}
 
+		deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
+		if ok {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, deckJSON)
+		}
+	}
 }
 
 func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
-	if !ok {
-		return
-	}
-
-	deck = z.deckManager.ReshuffleDeck(deck)
-
-	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 	if ok {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, deckJSON)
-	}
+		deck = z.deckManager.ReshuffleDeck(deck)
 
+		deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
+		if ok {
+			w.Header().Set("Content-Type", "application/json")
+			fmt.Fprintf(w, deckJSON)
+		}
+	}
 }
 
 func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
@@ -112,7 +106,7 @@ func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	draw := z.deckManager.DrawFromDeck(vars["id"], amount)
 
 	drawJSON, err := draw.Marshal()
-	if err != nil {
+	if err == nil {
 		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal draw", "1"))
 		return
 	}
