@@ -12,6 +12,8 @@ import (
 
 type DeckAPI struct {
 	router      *mux.Router
+	getRoute    *mux.Route
+	postRoute   *mux.Route
 	deckManager *deckmanager.DeckManager
 }
 
@@ -21,15 +23,17 @@ func NewDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *DeckAPI {
 		deckManager: deckM,
 	}
 
+	dAPI.getRoute = dAPI.router.Methods("GET")
+	dAPI.getRoute = dAPI.router.Methods("POST")
+
 	return dAPI
 }
 
 func (z *DeckAPI) Register() {
 	z.registerNewPaths()
-
-	z.router.Path("/{id}").Methods("GET").HandlerFunc(z.retrieveDeckHandler)
-	z.router.Path("/{id}/draw/{amount:[0-9]+}").Methods("GET").HandlerFunc(z.drawDeckHandler)
-	z.router.Path("/shuffle/{id}").Methods("POST").HandlerFunc(z.shuffleHandler)
+	z.getRoute.Path("/{id}").HandlerFunc(z.retrieveDeckHandler)
+	z.getRoute.Path("/{id}/draw/{amount:[0-9]+}").HandlerFunc(z.drawDeckHandler)
+	z.postRoute.Path("/shuffle/{id}").HandlerFunc(z.shuffleHandler)
 }
 
 func (z *DeckAPI) registerNewPaths() {
