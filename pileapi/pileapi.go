@@ -43,19 +43,15 @@ func (z *PileAPI) newPileHandler(w http.ResponseWriter, r *http.Request) {
 
 func (z *PileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
-
-	pile := z.pileManager.FindPileById(id)
+	pile := z.pileManager.FindPileById(vars["id"])
 	if pile == nil {
-		e := apiutilities.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", id), "1")
-		apiutilities.HandleError(w, r, e)
+		apiutilities.HandleError(w, r, apiutilities.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), "1"))
 		return
 	}
 
 	pileJSON, err := pile.Marshal()
 	if err != nil {
-		e := apiutilities.NewAPIError("Could not marshal pile", "1")
-		apiutilities.HandleError(w, r, e)
+		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal pile", "1"))
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
