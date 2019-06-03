@@ -11,27 +11,17 @@ import (
 
 func (z *DeckAPI) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *deckofcards.Deck) {
 	if shuffle {
-		deck = z.createShuffledDeck(amountOfDecks, jokers)
+		if jokers {
+			deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amountOfDecks)
+		} else {
+			deck = z.deckManager.RequestNumberOfShuffledDecks(amountOfDecks)
+		}
 	} else {
-		deck = z.createUnshuffledDeck(amountOfDecks, jokers)
-	}
-	return
-}
-
-func (z *DeckAPI) createUnshuffledDeck(amount int, jokers bool) (deck *deckofcards.Deck) {
-	if jokers {
-		deck = z.deckManager.RequestNumberOfDecksWithJokers(amount)
-	} else {
-		deck = z.deckManager.RequestNumberOfDecks(amount)
-	}
-	return
-}
-
-func (z *DeckAPI) createShuffledDeck(amount int, jokers bool) (deck *deckofcards.Deck) {
-	if jokers {
-		deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amount)
-	} else {
-		deck = z.deckManager.RequestNumberOfShuffledDecks(amount)
+		if jokers {
+			deck = z.deckManager.RequestNumberOfDecksWithJokers(amountOfDecks)
+		} else {
+			deck = z.deckManager.RequestNumberOfDecks(amountOfDecks)
+		}
 	}
 	return
 }
