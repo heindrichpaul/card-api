@@ -3,6 +3,7 @@ package deckapi
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/apiutilities"
@@ -62,7 +63,7 @@ func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
-	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
+	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
 	if !ok {
 		return
 	}
@@ -76,7 +77,7 @@ func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
-	deck, ok := z.findAndValidateDeck(w, r, z.getIdFromRequest(r))
+	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
 	if !ok {
 		return
 	}
@@ -93,7 +94,12 @@ func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 
 func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 
-	id, amount := z.getDrawValuesFromRequest(r)
+	vars := mux.Vars(r)
+	id := vars["id"]
+	amount, err := strconv.Atoi(vars["amount"])
+	if err != nil {
+		amount = 1
+	}
 
 	_, ok := z.findAndValidateDeck(w, r, id)
 	if !ok {

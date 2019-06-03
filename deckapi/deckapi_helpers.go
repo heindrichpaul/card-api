@@ -3,7 +3,6 @@ package deckapi
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/apiutilities"
@@ -64,18 +63,8 @@ func (z *DeckAPI) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers b
 	return
 }
 
-func (z *DeckAPI) getIdFromRequest(r *http.Request) (id string) {
+func (z *DeckAPI) getIDFromRequest(r *http.Request) (id string) {
 	vars := mux.Vars(r)
 	id = vars["id"]
-	return
-}
-
-func (z *DeckAPI) getDrawValuesFromRequest(r *http.Request) (id string, amount int) {
-	vars := mux.Vars(r)
-	id = vars["id"]
-	amount, err := strconv.Atoi(vars["amount"])
-	if err != nil {
-		amount = 1
-	}
 	return
 }
