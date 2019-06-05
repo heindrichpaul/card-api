@@ -1,9 +1,9 @@
-package pilemanager
+package pile
 
 import (
 	"fmt"
 
-	persistancemanager "github.com/heindrichpaul/card-api/persistanceManager"
+	persistancemanager "github.com/heindrichpaul/card-api/manager/persistance"
 	"github.com/heindrichpaul/deckofcards"
 )
 

@@ -1,21 +1,21 @@
 package manager
 
 import (
-	"github.com/heindrichpaul/card-api/deckmanager"
-	persistancemanager "github.com/heindrichpaul/card-api/persistanceManager"
-	"github.com/heindrichpaul/card-api/pilemanager"
+	"github.com/heindrichpaul/card-api/manager/deck"
+	persistancemanager "github.com/heindrichpaul/card-api/manager/persistance"
+	"github.com/heindrichpaul/card-api/manager/pile"
 )
 
 type Manager struct {
-	DeckManager *deckmanager.DeckManager
-	PileManager *pilemanager.PileManager
+	DeckManager *deck.DeckManager
+	PileManager *pile.PileManager
 }
 
 func NewManager() *Manager {
 	p := persistancemanager.NewPersistanceManager()
 	m := &Manager{
-		DeckManager: deckmanager.NewDeckManager(p),
-		PileManager: pilemanager.NewPileManager(p),
+		DeckManager: deck.NewDeckManager(p),
+		PileManager: pile.NewPileManager(p),
 	}
 
 	return m

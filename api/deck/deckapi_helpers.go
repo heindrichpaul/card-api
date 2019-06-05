@@ -1,4 +1,4 @@
-package deckapi
+package deck
 
 import (
 	"fmt"

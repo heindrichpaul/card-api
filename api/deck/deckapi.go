@@ -1,4 +1,4 @@
-package deckapi
+package deck
 
 import (
 	"fmt"
@@ -7,17 +7,17 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/apiutilities"
-	"github.com/heindrichpaul/card-api/deckmanager"
+	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
 type DeckAPI struct {
 	router      *mux.Router
 	getRoute    *mux.Route
 	postRoute   *mux.Route
-	deckManager *deckmanager.DeckManager
+	deckManager *deck.DeckManager
 }
 
-func NewDeckAPI(mux *mux.Router, deckM *deckmanager.DeckManager) *DeckAPI {
+func NewDeckAPI(mux *mux.Router, deckM *deck.DeckManager) *DeckAPI {
 	dAPI := &DeckAPI{
 		router:      mux.PathPrefix("/deck").Subrouter(),
 		deckManager: deckM,

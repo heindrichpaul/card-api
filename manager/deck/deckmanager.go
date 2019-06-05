@@ -1,7 +1,7 @@
-package deckmanager
+package deck
 
 import (
-	persistancemanager "github.com/heindrichpaul/card-api/persistanceManager"
+	persistancemanager "github.com/heindrichpaul/card-api/manager/persistance"
 	"github.com/heindrichpaul/deckofcards"
 )
 

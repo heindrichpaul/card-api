@@ -2,15 +2,15 @@ package api
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/heindrichpaul/card-api/deckapi"
+	"github.com/heindrichpaul/card-api/api/deck"
+	"github.com/heindrichpaul/card-api/api/pile"
 	"github.com/heindrichpaul/card-api/manager"
-	"github.com/heindrichpaul/card-api/pileapi"
 )
 
 type CardeckApi struct {
 	Router  *mux.Router
-	deckApi *deckapi.DeckAPI
-	pileApi *pileapi.PileAPI
+	deckApi *deck.DeckAPI
+	pileApi *pile.PileAPI
 }
 
 func NewAPI() *CardeckApi {
@@ -24,8 +24,8 @@ func NewAPI() *CardeckApi {
 
 func (z *CardeckApi) registerAPIs() {
 	manager := manager.NewManager()
-	z.deckApi = deckapi.NewDeckAPI(z.Router, manager.DeckManager)
+	z.deckApi = deck.NewDeckAPI(z.Router, manager.DeckManager)
 	z.deckApi.Register()
-	z.pileApi = pileapi.NewPileAPI(z.Router, manager.PileManager)
+	z.pileApi = pile.NewPileAPI(z.Router, manager.PileManager)
 	z.pileApi.Register()
 }

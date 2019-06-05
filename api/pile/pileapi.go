@@ -1,4 +1,4 @@
-package pileapi
+package pile
 
 import (
 	"fmt"
@@ -6,15 +6,15 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/apiutilities"
-	"github.com/heindrichpaul/card-api/pilemanager"
+	"github.com/heindrichpaul/card-api/manager/pile"
 )
 
 type PileAPI struct {
 	router      *mux.Router
-	pileManager *pilemanager.PileManager
+	pileManager *pile.PileManager
 }
 
-func NewPileAPI(mux *mux.Router, pileManager *pilemanager.PileManager) *PileAPI {
+func NewPileAPI(mux *mux.Router, pileManager *pile.PileManager) *PileAPI {
 	pAPI := &PileAPI{
 		router:      mux.PathPrefix("/pile").Subrouter(),
 		pileManager: pileManager,
