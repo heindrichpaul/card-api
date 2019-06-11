@@ -1,4 +1,4 @@
-package apiutilities
+package apierror
 
 import (
 	"log"
@@ -7,6 +7,11 @@ import (
 
 	jsoniter "github.com/json-iterator/go"
 	"github.com/twinj/uuid"
+)
+
+const (
+	MarshalError  = "1"
+	NotFoundError = "2"
 )
 
 type ApiError struct {

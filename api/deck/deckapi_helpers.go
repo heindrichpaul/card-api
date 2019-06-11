@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/heindrichpaul/card-api/apierror"
 	"github.com/heindrichpaul/card-api/apiutilities"
 	"github.com/heindrichpaul/deckofcards"
 )
@@ -29,7 +30,7 @@ func (z *DeckAPI) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *dec
 func (z *DeckAPI) findAndValidateDeck(w http.ResponseWriter, r *http.Request, id string) (deck *deckofcards.Deck, ok bool) {
 	deck = z.deckManager.FindDeckById(id)
 	if deck == nil {
-		e := apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", id), "1")
+		e := apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", id), apierror.NotFoundError)
 		apiutilities.HandleResponse(w, r, e)
 		return nil, false
 	}

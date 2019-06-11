@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/heindrichpaul/card-api/apierror"
 	"github.com/heindrichpaul/card-api/apiutilities"
 	"github.com/heindrichpaul/card-api/manager/pile"
 )
@@ -32,13 +33,6 @@ func (z *PileAPI) newPileHandler(w http.ResponseWriter, r *http.Request) {
 	pile := z.pileManager.RequestNewPile()
 
 	apiutilities.HandleResponse(w, r, pile)
-	/*pileJSON, err := pile.Marshal()
-	if err != nil {
-		e := apiutilities.NewAPIError("Could not marshal pile", "1")
-		apiutilities.HandleError(w, r, e)
-		return
-	}*/
-
 }
 
 func (z *PileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
@@ -47,16 +41,8 @@ func (z *PileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	x = z.pileManager.FindPileById(vars["id"])
 	if x == nil {
-		x = apiutilities.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), "1")
+		x = apierror.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), apierror.NotFoundError)
 		return
 	}
-
-	/*pileJSON, err := pile.Marshal()
-	if err != nil {
-		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal pile", "1"))
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(pileJSON))*/
 
 }

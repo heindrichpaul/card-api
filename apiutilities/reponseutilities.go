@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/heindrichpaul/card-api/apierror"
 )
 
 type Marshalable interface {
@@ -19,8 +21,7 @@ type ResponseType struct {
 func verifyAndMarshal(m Marshalable) (response ResponseType) {
 	marshalJSON, err := m.Marshal()
 	if err != nil {
-		errorString := fmt.Sprintf("Could not marshal %s", reflect.TypeOf(m).Name())
-		e := NewAPIError(errorString, "1")
+		e := apierror.NewAPIError(fmt.Sprintf("Could not marshal %s", reflect.TypeOf(m).Name()), apierror.MarshalError)
 		return verifyAndMarshal(e)
 	}
 	response.JSON = string(marshalJSON)

@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/heindrichpaul/card-api/apierror"
 	"github.com/heindrichpaul/card-api/apiutilities"
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
@@ -58,22 +59,12 @@ func (z *DeckAPI) registerUnshuffledPaths(router *mux.Route) {
 func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck := z.createDeck(z.getNewDeckQueryValues(r))
 	apiutilities.HandleResponse(w, r, deck)
-	/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-	if ok {
-		w.Header().Set("Content-Type", "application/json")
-		fmt.Fprintf(w, deckJSON)
-	}*/
 }
 
 func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
 	if ok {
 		apiutilities.HandleResponse(w, r, deck)
-		/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-		if ok {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, deckJSON)
-		}*/
 	}
 }
 
@@ -82,11 +73,6 @@ func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		deck = z.deckManager.ReshuffleDeck(deck)
 		apiutilities.HandleResponse(w, r, deck)
-		/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
-		if ok {
-			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, deckJSON)
-		}*/
 	}
 }
 
@@ -100,18 +86,9 @@ func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !z.deckManager.DoesDeckExist(vars["id"]) {
-		x = apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), "1")
-
+		x = apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), apierror.NotFoundError)
 		return
 	}
 
 	x = z.deckManager.DrawFromDeck(vars["id"], amount)
-	//apiutilities.HandleResponse(w, r, draw)
-	/*drawJSON, err := draw.Marshal()
-	if err == nil {
-		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal draw", "1"))
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(drawJSON))*/
 }
