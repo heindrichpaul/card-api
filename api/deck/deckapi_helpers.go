@@ -30,24 +30,14 @@ func (z *DeckAPI) findAndValidateDeck(w http.ResponseWriter, r *http.Request, id
 	deck = z.deckManager.FindDeckById(id)
 	if deck == nil {
 		e := apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", id), "1")
-		apiutilities.HandleError(w, r, e)
+		apiutilities.HandleResponse(w, r, e)
 		return nil, false
 	}
 	return deck, true
 }
 
-func (z *DeckAPI) marshalDeckAndValidate(w http.ResponseWriter, r *http.Request, deck *deckofcards.Deck) (json string, ok bool) {
-	deckJSON, err := deck.Marshal()
-	if err != nil {
-		e := apiutilities.NewAPIError("Could not marshal deck", "1")
-		apiutilities.HandleError(w, r, e)
-		return "", false
-	}
-	return string(deckJSON), true
-}
-
 func (z *DeckAPI) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
-	amount = apiutilities.GetIntWithDefaultValueAs1(r.URL.Query(), "amount")
+	amount = apiutilities.GetIntWithDefaultValueOfOne(r.URL.Query(), "amount")
 	jokers = apiutilities.GetBooleanValue(r.URL.Query(), "jokers")
 	shuffle = apiutilities.GetBooleanValue(r.URL.Query(), "shuffle")
 	return

@@ -16,7 +16,7 @@ type ApiError struct {
 }
 
 //Marshal marshals a pointer to a Deck into a byte array for transmission.
-func (z *ApiError) marshal() ([]byte, error) {
+func (z *ApiError) Marshal() ([]byte, error) {
 	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	return json.Marshal(z)
 }

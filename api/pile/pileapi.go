@@ -31,30 +31,32 @@ func (z *PileAPI) Register() {
 func (z *PileAPI) newPileHandler(w http.ResponseWriter, r *http.Request) {
 	pile := z.pileManager.RequestNewPile()
 
-	pileJSON, err := pile.Marshal()
+	apiutilities.HandleResponse(w, r, pile)
+	/*pileJSON, err := pile.Marshal()
 	if err != nil {
 		e := apiutilities.NewAPIError("Could not marshal pile", "1")
 		apiutilities.HandleError(w, r, e)
 		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(pileJSON))
+	}*/
+
 }
 
 func (z *PileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
+	var x apiutilities.Marshalable
+	defer apiutilities.HandleResponse(w, r, x)
 	vars := mux.Vars(r)
-	pile := z.pileManager.FindPileById(vars["id"])
-	if pile == nil {
-		apiutilities.HandleError(w, r, apiutilities.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), "1"))
+	x = z.pileManager.FindPileById(vars["id"])
+	if x == nil {
+		x = apiutilities.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), "1")
 		return
 	}
 
-	pileJSON, err := pile.Marshal()
+	/*pileJSON, err := pile.Marshal()
 	if err != nil {
 		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal pile", "1"))
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(pileJSON))
+	fmt.Fprintf(w, string(pileJSON))*/
 
 }

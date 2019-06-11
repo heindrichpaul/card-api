@@ -57,23 +57,23 @@ func (z *DeckAPI) registerUnshuffledPaths(router *mux.Route) {
 
 func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck := z.createDeck(z.getNewDeckQueryValues(r))
-
-	deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
+	apiutilities.HandleResponse(w, r, deck)
+	/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 	if ok {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprintf(w, deckJSON)
-	}
+	}*/
 }
 
 func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
 	if ok {
-
-		deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
+		apiutilities.HandleResponse(w, r, deck)
+		/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 		if ok {
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, deckJSON)
-		}
+		}*/
 	}
 }
 
@@ -81,17 +81,18 @@ func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
 	if ok {
 		deck = z.deckManager.ReshuffleDeck(deck)
-
-		deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
+		apiutilities.HandleResponse(w, r, deck)
+		/*deckJSON, ok := z.marshalDeckAndValidate(w, r, deck)
 		if ok {
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, deckJSON)
-		}
+		}*/
 	}
 }
 
 func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
-
+	var x apiutilities.Marshalable
+	defer apiutilities.HandleResponse(w, r, x)
 	vars := mux.Vars(r)
 	amount, err := strconv.Atoi(vars["amount"])
 	if err != nil {
@@ -99,17 +100,18 @@ func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !z.deckManager.DoesDeckExist(vars["id"]) {
-		apiutilities.HandleError(w, r, apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), "1"))
+		x = apiutilities.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), "1")
+
 		return
 	}
 
-	draw := z.deckManager.DrawFromDeck(vars["id"], amount)
-
-	drawJSON, err := draw.Marshal()
+	x = z.deckManager.DrawFromDeck(vars["id"], amount)
+	//apiutilities.HandleResponse(w, r, draw)
+	/*drawJSON, err := draw.Marshal()
 	if err == nil {
 		apiutilities.HandleError(w, r, apiutilities.NewAPIError("Could not marshal draw", "1"))
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprintf(w, string(drawJSON))
+	fmt.Fprintf(w, string(drawJSON))*/
 }
