@@ -36,13 +36,12 @@ func (z *PileAPI) newPileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *PileAPI) retrievePileHandler(w http.ResponseWriter, r *http.Request) {
-	var x apiutilities.Marshalable
-	defer apiutilities.HandleResponse(w, r, x)
 	vars := mux.Vars(r)
-	x = z.pileManager.FindPileById(vars["id"])
-	if x == nil {
-		x = apierror.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), apierror.NotFoundError)
+	pile := z.pileManager.FindPileById(vars["id"])
+	if pile == nil {
+		e := apierror.NewAPIError(fmt.Sprintf("Could not find pile with id: %s", vars["id"]), apierror.NotFoundError)
+		apiutilities.HandleResponse(w, r, e)
 		return
 	}
-
+	apiutilities.HandleResponse(w, r, pile)
 }

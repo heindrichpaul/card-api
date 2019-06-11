@@ -77,8 +77,6 @@ func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
-	var x apiutilities.Marshalable
-	defer apiutilities.HandleResponse(w, r, x)
 	vars := mux.Vars(r)
 	amount, err := strconv.Atoi(vars["amount"])
 	if err != nil {
@@ -86,9 +84,11 @@ func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !z.deckManager.DoesDeckExist(vars["id"]) {
-		x = apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), apierror.NotFoundError)
+		e := apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), apierror.NotFoundError)
+		apiutilities.HandleResponse(w, r, e)
 		return
 	}
 
-	x = z.deckManager.DrawFromDeck(vars["id"], amount)
+	draw := z.deckManager.DrawFromDeck(vars["id"], amount)
+	apiutilities.HandleResponse(w, r, draw)
 }
