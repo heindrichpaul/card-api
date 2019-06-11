@@ -1,4 +1,4 @@
-package persistancemanager
+package persistance
 
 import "github.com/heindrichpaul/deckofcards"
 

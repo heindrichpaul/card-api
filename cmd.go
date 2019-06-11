@@ -1,21 +1,14 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"github.com/heindrichpaul/card-api/api"
 	"github.com/rs/cors"
 )
 
 func main() {
-
-	mux := mux.NewRouter()
-	mux.HandleFunc("/hello", HelloWorldHandler)
-	handler := cors.Default().Handler(mux)
+	mux := api.NewAPI()
+	handler := cors.Default().Handler(mux.Router)
 	http.ListenAndServe(":8080", handler)
-}
-
-func HelloWorldHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World")
 }
