@@ -10,7 +10,7 @@ import (
 	"github.com/heindrichpaul/deckofcards"
 )
 
-func (z *DeckAPI) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *deckofcards.Deck) {
+func (z *API) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *deckofcards.Deck) {
 	if shuffle {
 		if jokers {
 			deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amountOfDecks)
@@ -27,24 +27,24 @@ func (z *DeckAPI) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *dec
 	return
 }
 
-func (z *DeckAPI) findAndValidateDeck(w http.ResponseWriter, r *http.Request, id string) (deck *deckofcards.Deck, ok bool) {
-	deck = z.deckManager.FindDeckById(id)
+func (z *API) findAndValidateDeck(w http.ResponseWriter, id string) (deck *deckofcards.Deck, ok bool) {
+	deck = z.deckManager.FindDeckByID(id)
 	if deck == nil {
 		e := apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", id), apierror.NotFoundError)
-		apiutilities.HandleResponse(w, r, e)
+		apiutilities.HandleResponse(w, e)
 		return nil, false
 	}
 	return deck, true
 }
 
-func (z *DeckAPI) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
+func (z *API) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
 	amount = apiutilities.GetIntWithDefaultValueOfOne(r.URL.Query(), "amount")
 	jokers = apiutilities.GetBooleanValue(r.URL.Query(), "jokers")
 	shuffle = apiutilities.GetBooleanValue(r.URL.Query(), "shuffle")
 	return
 }
 
-func (z *DeckAPI) getIDFromRequest(r *http.Request) (id string) {
+func (z *API) getIDFromRequest(r *http.Request) (id string) {
 	vars := mux.Vars(r)
 	id = vars["id"]
 	return

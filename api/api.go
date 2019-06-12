@@ -4,28 +4,43 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/heindrichpaul/card-api/api/deck"
 	"github.com/heindrichpaul/card-api/api/pile"
+	"github.com/heindrichpaul/card-api/interfaces"
 	"github.com/heindrichpaul/card-api/manager"
 )
 
-type CardDeckApi struct {
+//CardDeckAPI is a struct that contains the router and the api's for the pile and deck managers.
+type CardDeckAPI struct {
+	Manager *manager.Manager
 	Router  *mux.Router
-	deckApi *deck.DeckAPI
-	pileApi *pile.PileAPI
+	deckAPI *deck.API
+	pileAPI *pile.API
 }
 
-func NewAPI() *CardDeckApi {
-	carddeckApi := &CardDeckApi{
-		Router: mux.NewRouter(),
+//NewAPI returns a pointer to a new CardDeckAPI struct with a router and subroutes for the different managers.
+func NewAPI() *CardDeckAPI {
+	cardDeckAPI := &CardDeckAPI{
+		Manager: manager.NewManager(),
+		Router:  mux.NewRouter(),
 	}
 
-	carddeckApi.registerAPIs()
-	return carddeckApi
+	cardDeckAPI.registerAPIs()
+	return cardDeckAPI
 }
 
-func (z *CardDeckApi) registerAPIs() {
-	manager := manager.NewManager()
-	z.deckApi = deck.NewDeckAPI(z.Router, manager.DeckManager)
-	z.deckApi.Register()
-	z.pileApi = pile.NewPileAPI(z.Router, manager.PileManager)
-	z.pileApi.Register()
+//NewAPIWithPersistanceManager returns a pointer to a new CardDeckAPI struct with a router and subroutes for the different managers. It also uses the specified persistance manager for persistance.
+func NewAPIWithPersistanceManager(persistance interfaces.PersistanceManager) *CardDeckAPI {
+	cardDeckAPI := &CardDeckAPI{
+		Manager: manager.NewManagerWithPersistanceManager(persistance),
+		Router:  mux.NewRouter(),
+	}
+
+	cardDeckAPI.registerAPIs()
+	return cardDeckAPI
+}
+
+func (z *CardDeckAPI) registerAPIs() {
+	z.deckAPI = deck.NewDeckAPI(z.Router, z.Manager.DeckManager)
+	z.deckAPI.Register()
+	z.pileAPI = pile.NewPileAPI(z.Router, z.Manager.PileManager)
+	z.pileAPI.Register()
 }

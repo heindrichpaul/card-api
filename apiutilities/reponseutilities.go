@@ -9,10 +9,12 @@ import (
 	"github.com/heindrichpaul/card-api/apierror"
 )
 
+//Marshalable is an interface that represents all structs that can be marshalled into JSON.
 type Marshalable interface {
 	Marshal() ([]byte, error)
 }
 
+//ResponseType is a struct that wraps the response the API should send.
 type ResponseType struct {
 	StatusCode int
 	JSON       string
@@ -43,7 +45,8 @@ func isError(m Marshalable) bool {
 	return strings.Contains(nameOfMarshalable, "ApiError")
 }
 
-func HandleResponse(w http.ResponseWriter, r *http.Request, m Marshalable) {
+//HandleResponse accepts the Marshalable paramenter and writes it to the given http.ResponseWriter
+func HandleResponse(w http.ResponseWriter, m Marshalable) {
 	w.Header().Set("Content-Type", "application/json")
 	response := verifyAndMarshal(m)
 	w.WriteHeader(response.StatusCode)

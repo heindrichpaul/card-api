@@ -11,72 +11,75 @@ import (
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
-type DeckAPI struct {
+//API is a struct the is a collection of all components required to create the API for a DeckManager.
+type API struct {
 	router      *mux.Router
 	getRoute    *mux.Route
 	postRoute   *mux.Route
-	deckManager *deck.DeckManager
+	deckManager *deck.Manager
 }
 
-func NewDeckAPI(mux *mux.Router, deckM *deck.DeckManager) *DeckAPI {
-	dAPI := &DeckAPI{
+//NewDeckAPI returns a pointer to a newly initialized deck.API.
+func NewDeckAPI(mux *mux.Router, deckM *deck.Manager) *API {
+	api := &API{
 		router:      mux.PathPrefix("/deck").Subrouter(),
 		deckManager: deckM,
 	}
 
-	dAPI.getRoute = dAPI.router.Methods("GET")
-	dAPI.getRoute = dAPI.router.Methods("POST")
-	return dAPI
+	api.getRoute = api.router.Methods("GET")
+	api.getRoute = api.router.Methods("POST")
+	return api
 }
 
-func (z *DeckAPI) Register() {
+//Register registers all paths required by the deck.API.
+func (z *API) Register() {
 	z.registerNewPaths()
 	z.getRoute.Path("/{id}").HandlerFunc(z.retrieveDeckHandler)
 	z.getRoute.Path("/{id}/draw/{amount:[0-9]+}").HandlerFunc(z.drawDeckHandler)
 	z.postRoute.Path("/shuffle/{id}").HandlerFunc(z.shuffleHandler)
 }
 
-func (z *DeckAPI) registerNewPaths() {
+func (z *API) registerNewPaths() {
 	newPathSubRouter := z.router.PathPrefix("/deck").Subrouter().Methods("GET")
 	z.registerShufflePaths(newPathSubRouter)
 	z.registerUnshuffledPaths(newPathSubRouter)
 }
 
-func (z *DeckAPI) registerShufflePaths(router *mux.Route) {
+func (z *API) registerShufflePaths(router *mux.Route) {
 	router.HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
 	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
 	router.HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
 	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
 }
 
-func (z *DeckAPI) registerUnshuffledPaths(router *mux.Route) {
+func (z *API) registerUnshuffledPaths(router *mux.Route) {
 	router.HandlerFunc(z.newDeckHandler)
 	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
 	router.HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
 	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
 }
 
-func (z *DeckAPI) newDeckHandler(w http.ResponseWriter, r *http.Request) {
+func (z *API) newDeckHandler(w http.ResponseWriter, r *http.Request) {
 	deck := z.createDeck(z.getNewDeckQueryValues(r))
-	apiutilities.HandleResponse(w, r, deck)
+	apiutilities.HandleResponse(w, deck)
 }
 
-func (z *DeckAPI) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
-	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
+func (z *API) retrieveDeckHandler(w http.ResponseWriter, r *http.Request) {
+	deck, ok := z.findAndValidateDeck(w, z.getIDFromRequest(r))
 	if ok {
-		apiutilities.HandleResponse(w, r, deck)
+		apiutilities.HandleResponse(w, deck)
 	}
 }
 
-func (z *DeckAPI) shuffleHandler(w http.ResponseWriter, r *http.Request) {
-	deck, ok := z.findAndValidateDeck(w, r, z.getIDFromRequest(r))
+func (z *API) shuffleHandler(w http.ResponseWriter, r *http.Request) {
+	deck, ok := z.findAndValidateDeck(w, z.getIDFromRequest(r))
 	if ok {
 		deck = z.deckManager.ReshuffleDeck(deck)
-		apiutilities.HandleResponse(w, r, deck)
+		apiutilities.HandleResponse(w, deck)
 	}
 }
 
-func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
+func (z *API) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	amount, err := strconv.Atoi(vars["amount"])
 	if err != nil {
@@ -85,10 +88,10 @@ func (z *DeckAPI) drawDeckHandler(w http.ResponseWriter, r *http.Request) {
 
 	if !z.deckManager.DoesDeckExist(vars["id"]) {
 		e := apierror.NewAPIError(fmt.Sprintf("Could not find deck with id: %s", vars["id"]), apierror.NotFoundError)
-		apiutilities.HandleResponse(w, r, e)
+		apiutilities.HandleResponse(w, e)
 		return
 	}
 
 	draw := z.deckManager.DrawFromDeck(vars["id"], amount)
-	apiutilities.HandleResponse(w, r, draw)
+	apiutilities.HandleResponse(w, draw)
 }
