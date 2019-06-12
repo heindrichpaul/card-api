@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	mux := api.NewAPI()
-	handler := cors.Default().Handler(mux.Router)
+	app := api.NewAPI()
+	handler := cors.Default().Handler(app.Router)
 	http.ListenAndServe(":8080", handler)
 }

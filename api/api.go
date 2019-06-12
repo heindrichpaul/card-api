@@ -7,22 +7,22 @@ import (
 	"github.com/heindrichpaul/card-api/manager"
 )
 
-type CardeckApi struct {
+type CardDeckApi struct {
 	Router  *mux.Router
 	deckApi *deck.DeckAPI
 	pileApi *pile.PileAPI
 }
 
-func NewAPI() *CardeckApi {
-	cardeckApi := &CardeckApi{
+func NewAPI() *CardDeckApi {
+	carddeckApi := &CardDeckApi{
 		Router: mux.NewRouter(),
 	}
 
-	cardeckApi.registerAPIs()
-	return cardeckApi
+	carddeckApi.registerAPIs()
+	return carddeckApi
 }
 
-func (z *CardeckApi) registerAPIs() {
+func (z *CardDeckApi) registerAPIs() {
 	manager := manager.NewManager()
 	z.deckApi = deck.NewDeckAPI(z.Router, manager.DeckManager)
 	z.deckApi.Register()
