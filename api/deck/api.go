@@ -27,36 +27,36 @@ func NewDeckAPI(mux *mux.Router, deckM *deck.Manager) *API {
 	}
 
 	api.getRoute = api.router.Methods("GET")
-	api.getRoute = api.router.Methods("POST")
+	api.postRoute = api.router.Methods("POST")
 	return api
 }
 
 //Register registers all paths required by the deck.API.
 func (z *API) Register() {
 	z.registerNewPaths()
+	fmt.Println(z.router)
 	z.getRoute.Path("/{id}").HandlerFunc(z.retrieveDeckHandler)
 	z.getRoute.Path("/{id}/draw/{amount:[0-9]+}").HandlerFunc(z.drawDeckHandler)
 	z.postRoute.Path("/shuffle/{id}").HandlerFunc(z.shuffleHandler)
 }
 
 func (z *API) registerNewPaths() {
-	newPathSubRouter := z.router.PathPrefix("/deck").Subrouter().Methods("GET")
-	z.registerShufflePaths(newPathSubRouter)
-	z.registerUnshuffledPaths(newPathSubRouter)
+	z.registerShufflePaths()
+	z.registerUnshuffledPaths()
 }
 
-func (z *API) registerShufflePaths(router *mux.Route) {
-	router.HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
-	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
-	router.HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
-	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
+func (z *API) registerShufflePaths() {
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
 }
 
-func (z *API) registerUnshuffledPaths(router *mux.Route) {
-	router.HandlerFunc(z.newDeckHandler)
-	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
-	router.HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
-	router.HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
+func (z *API) registerUnshuffledPaths() {
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler)
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
+	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
 }
 
 func (z *API) newDeckHandler(w http.ResponseWriter, r *http.Request) {
