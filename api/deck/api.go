@@ -41,22 +41,22 @@ func (z *API) Register() {
 }
 
 func (z *API) registerNewPaths() {
-	z.registerShufflePaths()
-	z.registerUnshuffledPaths()
+	z.registerShufflePaths(z.router.PathPrefix("/new").Subrouter())
+	z.registerUnshuffledPaths(z.router.PathPrefix("/new").Methods("GET").Subrouter())
 }
 
-func (z *API) registerShufflePaths() {
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
+func (z *API) registerShufflePaths(router *mux.Router) {
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("shuffle", "{shuffle}")
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
 }
 
-func (z *API) registerUnshuffledPaths() {
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler)
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
-	z.router.Path("/new").Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
+func (z *API) registerUnshuffledPaths(router *mux.Router) {
+	router.Methods("GET").HandlerFunc(z.newDeckHandler)
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}")
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("jokers", "{jokers}")
+	router.Methods("GET").HandlerFunc(z.newDeckHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
 }
 
 func (z *API) newDeckHandler(w http.ResponseWriter, r *http.Request) {
