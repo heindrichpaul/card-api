@@ -42,7 +42,7 @@ func (z *API) Register() {
 
 func (z *API) registerNewPaths() {
 	z.registerShufflePaths(z.router.PathPrefix("/new").Subrouter())
-	z.registerUnshuffledPaths(z.router.PathPrefix("/new").Methods("GET").Subrouter())
+	z.registerUnshuffledPaths(z.router.PathPrefix("/new").Subrouter())
 }
 
 func (z *API) registerShufflePaths(router *mux.Router) {
