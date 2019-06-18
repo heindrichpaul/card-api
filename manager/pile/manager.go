@@ -65,20 +65,14 @@ func (z *Manager) GetCardsFromPile(ID string, cards deckofcards.Cards) *deckofca
 
 //GetAllCardsFromPile returns all cards from the pile with the given ID.
 func (z *Manager) GetAllCardsFromPile(ID string) *deckofcards.Draw {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+	pile := z.retrievePileByID(ID)
 	defer z.persistanceManger.PersistPile(pile)
 	return pile.PickAllCardsFromPile()
 }
 
 //GetAmountOfCardsFromBottomOfPile returns the requested amount of cards from the bottom of the pile with the given ID.
 func (z *Manager) GetAmountOfCardsFromBottomOfPile(ID string, amount int) *deckofcards.Draw {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+	pile := z.retrievePileByID(ID)
 	defer z.persistanceManger.PersistPile(pile)
 	return pile.PickAmountOfCardsFromBottomOfPile(amount)
 }
@@ -116,4 +110,12 @@ func (z *Manager) FindPileByID(ID string) *deckofcards.Pile {
 func (z *Manager) DoesPileExist(ID string) bool {
 	_, ok := z.persistanceManger.RetrieveDeck(ID)
 	return ok
+}
+
+func (z *Manager) retrievePileByID(ID string) *deckofcards.Pile {
+	pile, ok := z.persistanceManger.RetrievePile(ID)
+	if !ok {
+		return nil
+	}
+	return pile
 }
