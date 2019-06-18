@@ -1,15 +1,15 @@
-package persistance
+package persistence
 
 import "github.com/heindrichpaul/deckofcards"
 
-//MapManager is a struct that implements the interfaces.PersistanceManager interface with a internal map as a way of persistance.
+//MapManager is a struct that implements the interfaces.PersistenceManager interface with a internal map as a way of persistence.
 type MapManager struct {
 	piles map[string]*deckofcards.Pile
 	decks map[string]*deckofcards.Deck
 }
 
-//NewMapPersistanceManager returns a pointer to a newly created MapManager.
-func NewMapPersistanceManager() *MapManager {
+//NewMapPersistenceManager returns a pointer to a newly created MapManager.
+func NewMapPersistenceManager() *MapManager {
 	p := &MapManager{
 		piles: make(map[string]*deckofcards.Pile),
 		decks: make(map[string]*deckofcards.Deck),

@@ -27,10 +27,10 @@ func NewAPI() *CardDeckAPI {
 	return cardDeckAPI
 }
 
-//NewAPIWithPersistanceManager returns a pointer to a new CardDeckAPI struct with a router and subroutes for the different managers. It also uses the specified persistance manager for persistance.
-func NewAPIWithPersistanceManager(persistance interfaces.PersistanceManager) *CardDeckAPI {
+//NewAPIWithPersistenceManager returns a pointer to a new CardDeckAPI struct with a router and subroutes for the different managers. It also uses the specified persistance manager for persistance.
+func NewAPIWithPersistenceManager(persistance interfaces.PersistenceManager) *CardDeckAPI {
 	cardDeckAPI := &CardDeckAPI{
-		Manager: manager.NewManagerWithPersistanceManager(persistance),
+		Manager: manager.NewManagerWithPersistenceManager(persistance),
 		Router:  mux.NewRouter(),
 	}
 

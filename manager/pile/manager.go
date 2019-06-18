@@ -9,11 +9,11 @@ import (
 
 //Manager is a struct that handles all functionality around piles.
 type Manager struct {
-	persistanceManger interfaces.PersistanceManager
+	persistanceManger interfaces.PersistenceManager
 }
 
 //NewPileManager returns a pointer to a new pile.Manager struct
-func NewPileManager(p interfaces.PersistanceManager) *Manager {
+func NewPileManager(p interfaces.PersistenceManager) *Manager {
 	d := &Manager{
 		persistanceManger: p,
 	}
