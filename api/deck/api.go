@@ -6,43 +6,66 @@ import (
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
-//API is a struct the is a collection of all components required to create the API for a DeckManager.
-type API struct {
+type handlers struct {
+	newHandler      *handler.NewHandler
+	shuffleHandler  *handler.ShuffleHandler
+	drawHandler     *handler.DrawHandler
+	retrieveHandler *handler.RetrieveHandler
+}
+
+type routers struct {
 	router           *mux.Router
 	newSubRouter     *mux.Router
 	shuffleSubRouter *mux.Router
 	drawSubRouter    *mux.Router
-	getRoute         *mux.Route
-	deckManager      *deck.Manager
-	newHandler       *handler.NewHandler
-	shuffleHandler   *handler.ShuffleHandler
-	drawHandler      *handler.DrawHandler
-	retrieveHandler  *handler.RetrieveHandler
+}
+
+//API is a struct the is a collection of all components required to create the API for a DeckManager.
+type API struct {
+	getRoute    *mux.Route
+	deckManager *deck.Manager
+	r           *routers
+	h           *handlers
+}
+
+func newRouters(mux *mux.Router) *routers {
+	r := &routers{
+		router: mux.PathPrefix("/pile").Subrouter(),
+	}
+	r.newSubRouter = r.router.PathPrefix("/new").Methods("GET").Subrouter()
+	r.shuffleSubRouter = r.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
+	r.drawSubRouter = r.router.PathPrefix("/draw").Methods("GET").Subrouter()
+	return r
+}
+
+func newHandlers(deckManager *deck.Manager) *handlers {
+	h := &handlers{
+		newHandler:      handler.CreateNewHandler(deckManager),
+		retrieveHandler: handler.CreateRetrieveHandler(deckManager),
+		shuffleHandler:  handler.CreateShuffleHandler(deckManager),
+		drawHandler:     handler.CreateDrawHandler(deckManager),
+	}
+	return h
 }
 
 //NewDeckAPI returns a pointer to a newly initialized deck.API.
-func NewDeckAPI(mux *mux.Router, deckM *deck.Manager) *API {
+func NewDeckAPI(mux *mux.Router, deckManager *deck.Manager) *API {
 	api := &API{
-		router:          mux.PathPrefix("/deck").Subrouter(),
-		deckManager:     deckM,
-		newHandler:      handler.CreateNewHandler(deckM),
-		retrieveHandler: handler.CreateRetrieveHandler(deckM),
-		shuffleHandler:  handler.CreateShuffleHandler(deckM),
-		drawHandler:     handler.CreateDrawHandler(deckM),
+		r:           newRouters(mux),
+		h:           newHandlers(deckManager),
+		deckManager: deckManager,
 	}
-	api.newSubRouter = api.router.PathPrefix("/new").Methods("GET").Subrouter()
-	api.shuffleSubRouter = api.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
-	api.drawSubRouter = api.router.PathPrefix("/draw").Methods("GET").Subrouter()
-	api.getRoute = api.router.Methods("GET")
+
+	api.getRoute = api.r.router.Methods("GET")
 	return api
 }
 
 //Register registers all paths required by the deck.API.
 func (z *API) Register() {
 	z.registerNewPaths()
-	z.getRoute.Path("/{id}").Handler(z.retrieveHandler)
-	z.shuffleSubRouter.Handle("/{id}", z.shuffleHandler)
-	z.drawSubRouter.Handle("/{id}/{amount:[0-9]+}", z.drawHandler)
+	z.getRoute.Path("/{id}").Handler(z.h.retrieveHandler)
+	z.r.shuffleSubRouter.Handle("/{id}", z.h.shuffleHandler)
+	z.r.drawSubRouter.Handle("/{id}/{amount:[0-9]+}", z.h.drawHandler)
 }
 
 func (z *API) registerNewPaths() {
@@ -51,15 +74,15 @@ func (z *API) registerNewPaths() {
 }
 
 func (z *API) registerShufflePaths() {
-	z.newSubRouter.Handle("/", z.newHandler).Queries("shuffle", "{shuffle}")
-	z.newSubRouter.Handle("/", z.newHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
-	z.newSubRouter.Handle("/", z.newHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
-	z.newSubRouter.Handle("/", z.newHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("shuffle", "{shuffle}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("amount", "{amount}", "shuffle", "{shuffle}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("jokers", "{jokers}", "shuffle", "{shuffle}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("amount", "{amount}", "jokers", "{jokers},", "shuffle", "{shuffle}")
 }
 
 func (z *API) registerUnshuffledPaths() {
-	z.newSubRouter.Handle("/", z.newHandler)
-	z.newSubRouter.Handle("/", z.newHandler).Queries("amount", "{amount}")
-	z.newSubRouter.Handle("/", z.newHandler).Queries("jokers", "{jokers}")
-	z.newSubRouter.Handle("/", z.newHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
+	z.r.newSubRouter.Handle("/", z.h.newHandler)
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("amount", "{amount}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("jokers", "{jokers}")
+	z.r.newSubRouter.Handle("/", z.h.newHandler).Queries("amount", "{amount}", "jokers", "{jokers},")
 }
