@@ -30,7 +30,7 @@ type API struct {
 
 func newRouters(mux *mux.Router) *routers {
 	r := &routers{
-		router: mux.PathPrefix("/pile").Subrouter(),
+		router: mux.PathPrefix("/deck").Subrouter(),
 	}
 	r.newSubRouter = r.router.PathPrefix("/new").Methods("GET").Subrouter()
 	r.shuffleSubRouter = r.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
