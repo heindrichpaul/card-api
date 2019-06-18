@@ -1,8 +1,11 @@
 package apiutilities
 
 import (
+	"net/http"
 	"net/url"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 //GetBooleanValue returns the boolean value from the key in the url.Values.
@@ -21,4 +24,10 @@ func GetIntWithDefaultValueOfOne(v url.Values, key string) int {
 		number = 1
 	}
 	return number
+}
+
+func GetIDFromRequest(r *http.Request) (id string) {
+	vars := mux.Vars(r)
+	id = vars["id"]
+	return
 }
