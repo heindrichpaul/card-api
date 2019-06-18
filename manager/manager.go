@@ -3,13 +3,13 @@ package manager
 import (
 	"github.com/heindrichpaul/card-api/interfaces"
 	"github.com/heindrichpaul/card-api/manager/deck"
-	persistancemanager "github.com/heindrichpaul/card-api/manager/persistance"
+	persistencemanager "github.com/heindrichpaul/card-api/manager/persistance"
 	"github.com/heindrichpaul/card-api/manager/pile"
 )
 
 //Manager is a struct that wraps all managers for easy transport between objects.
 type Manager struct {
-	PersistanceManager interfaces.PersistanceManager
+	PersistenceManager interfaces.PersistenceManager
 	DeckManager        *deck.Manager
 	PileManager        *pile.Manager
 }
@@ -17,19 +17,19 @@ type Manager struct {
 //NewManager returns a pointer to a new Manager struct.
 func NewManager() *Manager {
 	m := &Manager{
-		PersistanceManager: persistancemanager.NewMapPersistanceManager(),
+		PersistenceManager: persistencemanager.NewMapPersistenceManager(),
 	}
 
-	m.DeckManager = deck.NewDeckManager(m.PersistanceManager)
-	m.PileManager = pile.NewPileManager(m.PersistanceManager)
+	m.DeckManager = deck.NewDeckManager(m.PersistenceManager)
+	m.PileManager = pile.NewPileManager(m.PersistenceManager)
 
 	return m
 }
 
-//NewManagerWithPersistanceManager returns a pointer to a new Manager struct with the specified persistance manager.
-func NewManagerWithPersistanceManager(persistance interfaces.PersistanceManager) *Manager {
+//NewManagerWithPersistenceManager returns a pointer to a new Manager struct with the specified persistance manager.
+func NewManagerWithPersistenceManager(persistance interfaces.PersistenceManager) *Manager {
 	m := &Manager{
-		PersistanceManager: persistance,
+		PersistenceManager: persistance,
 		DeckManager:        deck.NewDeckManager(persistance),
 		PileManager:        pile.NewPileManager(persistance),
 	}

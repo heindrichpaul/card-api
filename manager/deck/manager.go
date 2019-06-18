@@ -7,11 +7,11 @@ import (
 
 //Manager is a struct that handles all functionality around decks.
 type Manager struct {
-	persistanceManger interfaces.PersistanceManager
+	persistanceManger interfaces.PersistenceManager
 }
 
 //NewDeckManager returns a pointer to a new deck.Manager struct
-func NewDeckManager(p interfaces.PersistanceManager) *Manager {
+func NewDeckManager(p interfaces.PersistenceManager) *Manager {
 	d := &Manager{
 		persistanceManger: p,
 	}

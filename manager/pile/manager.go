@@ -9,11 +9,11 @@ import (
 
 //Manager is a struct that handles all functionality around piles.
 type Manager struct {
-	persistanceManger interfaces.PersistanceManager
+	persistanceManger interfaces.PersistenceManager
 }
 
 //NewPileManager returns a pointer to a new pile.Manager struct
-func NewPileManager(p interfaces.PersistanceManager) *Manager {
+func NewPileManager(p interfaces.PersistenceManager) *Manager {
 	d := &Manager{
 		persistanceManger: p,
 	}
@@ -27,12 +27,8 @@ func (z *Manager) RequestNewPile() *deckofcards.Pile {
 	return pile
 }
 
-//ShufflePile shuffles an existing pile with the given ID.
-func (z *Manager) ShufflePile(ID string) *deckofcards.Pile {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+//ReshufflePile shuffles an existing pile.
+func (z *Manager) ReshufflePile(pile *deckofcards.Pile) *deckofcards.Pile {
 	defer z.persistanceManger.PersistPile(pile)
 	pile = deckofcards.ShufflePile(pile)
 	return pile
@@ -69,20 +65,14 @@ func (z *Manager) GetCardsFromPile(ID string, cards deckofcards.Cards) *deckofca
 
 //GetAllCardsFromPile returns all cards from the pile with the given ID.
 func (z *Manager) GetAllCardsFromPile(ID string) *deckofcards.Draw {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+	pile := z.retrievePileByID(ID)
 	defer z.persistanceManger.PersistPile(pile)
 	return pile.PickAllCardsFromPile()
 }
 
 //GetAmountOfCardsFromBottomOfPile returns the requested amount of cards from the bottom of the pile with the given ID.
 func (z *Manager) GetAmountOfCardsFromBottomOfPile(ID string, amount int) *deckofcards.Draw {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+	pile := z.retrievePileByID(ID)
 	defer z.persistanceManger.PersistPile(pile)
 	return pile.PickAmountOfCardsFromBottomOfPile(amount)
 }
@@ -109,6 +99,20 @@ func (z *Manager) RetrieveCardsInPile(ID string) deckofcards.Cards {
 
 //FindPileByID returns the pile with the given ID.
 func (z *Manager) FindPileByID(ID string) *deckofcards.Pile {
+	pile, ok := z.persistanceManger.RetrievePile(ID)
+	if !ok {
+		return nil
+	}
+	return pile
+}
+
+//DoesPileExist returns true if the pile with the given ID exists.
+func (z *Manager) DoesPileExist(ID string) bool {
+	_, ok := z.persistanceManger.RetrieveDeck(ID)
+	return ok
+}
+
+func (z *Manager) retrievePileByID(ID string) *deckofcards.Pile {
 	pile, ok := z.persistanceManger.RetrievePile(ID)
 	if !ok {
 		return nil

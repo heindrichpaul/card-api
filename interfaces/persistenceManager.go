@@ -2,8 +2,8 @@ package interfaces
 
 import "github.com/heindrichpaul/deckofcards"
 
-//PersistanceManager is an interface that can be used to swap to different ways of persistance
-type PersistanceManager interface {
+//PersistenceManager is an interface that can be used to swap to different ways of persistance
+type PersistenceManager interface {
 	PersistDeck(deck *deckofcards.Deck) bool
 	RetrieveDeck(id string) (*deckofcards.Deck, bool)
 	PersistPile(pile *deckofcards.Pile) bool
