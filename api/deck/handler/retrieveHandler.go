@@ -7,18 +7,18 @@ import (
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
-type RetrieveDeckHandler struct {
+type RetrieveHandler struct {
 	deckManager *deck.Manager
 }
 
-func CreateRetrieveDeckHandler(manager *deck.Manager) *RetrieveDeckHandler {
-	z := &RetrieveDeckHandler{
+func CreateRetrieveHandler(manager *deck.Manager) *RetrieveHandler {
+	z := &RetrieveHandler{
 		deckManager: manager,
 	}
 	return z
 }
 
-func (z *RetrieveDeckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (z *RetrieveHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	id := apiutilities.GetIDFromRequest(r)
 	if z.deckManager.DoesDeckExist(id) {
 		deck := z.deckManager.FindDeckByID(id)

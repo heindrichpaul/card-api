@@ -15,10 +15,10 @@ type API struct {
 	getRoute         *mux.Route
 	postRoute        *mux.Route
 	deckManager      *deck.Manager
-	newHandler       *handler.NewDeckHandler
-	shuffleHandler   *handler.ShuffleDeckHandler
-	drawHandler      *handler.DrawDeckHandler
-	retrieveHandler  *handler.RetrieveDeckHandler
+	newHandler       *handler.NewHandler
+	shuffleHandler   *handler.ShuffleHandler
+	drawHandler      *handler.DrawHandler
+	retrieveHandler  *handler.RetrieveHandler
 }
 
 //NewDeckAPI returns a pointer to a newly initialized deck.API.
@@ -28,10 +28,10 @@ func NewDeckAPI(mux *mux.Router, deckM *deck.Manager) *API {
 		deckManager: deckM,
 	}
 
-	api.newHandler = handler.CreateNewDeckHandler(api.deckManager)
-	api.retrieveHandler = handler.CreateRetrieveDeckHandler(api.deckManager)
-	api.shuffleHandler = handler.CreateShuffleDeckHandler(api.deckManager)
-	api.drawHandler = handler.CreateDrawDeckHandler(api.deckManager)
+	api.newHandler = handler.CreateNewHandler(api.deckManager)
+	api.retrieveHandler = handler.CreateRetrieveHandler(api.deckManager)
+	api.shuffleHandler = handler.CreateShuffleHandler(api.deckManager)
+	api.drawHandler = handler.CreateDrawHandler(api.deckManager)
 	api.newSubRouter = api.router.PathPrefix("/new").Methods("GET").Subrouter()
 	api.shuffleSubRouter = api.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
 	api.drawSubRouter = api.router.PathPrefix("/draw").Methods("GET").Subrouter()

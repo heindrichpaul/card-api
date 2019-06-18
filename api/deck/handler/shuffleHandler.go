@@ -7,18 +7,18 @@ import (
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
-type ShuffleDeckHandler struct {
+type ShuffleHandler struct {
 	deckManager *deck.Manager
 }
 
-func CreateShuffleDeckHandler(manager *deck.Manager) *ShuffleDeckHandler {
-	z := &ShuffleDeckHandler{
+func CreateShuffleHandler(manager *deck.Manager) *ShuffleHandler {
+	z := &ShuffleHandler{
 		deckManager: manager,
 	}
 	return z
 }
 
-func (z *ShuffleDeckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (z *ShuffleHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	id := apiutilities.GetIDFromRequest(r)
 	if z.deckManager.DoesDeckExist(id) {
 		deck := z.deckManager.FindDeckByID(id)

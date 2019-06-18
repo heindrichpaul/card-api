@@ -11,18 +11,18 @@ import (
 	"github.com/heindrichpaul/card-api/manager/deck"
 )
 
-type DrawDeckHandler struct {
+type DrawHandler struct {
 	deckManager *deck.Manager
 }
 
-func CreateDrawDeckHandler(manager *deck.Manager) *DrawDeckHandler {
-	z := &DrawDeckHandler{
+func CreateDrawHandler(manager *deck.Manager) *DrawHandler {
+	z := &DrawHandler{
 		deckManager: manager,
 	}
 	return z
 }
 
-func (z *DrawDeckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (z *DrawHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	amount, err := strconv.Atoi(vars["amount"])
 	if err != nil {

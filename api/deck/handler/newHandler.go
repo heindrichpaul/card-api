@@ -8,23 +8,23 @@ import (
 	"github.com/heindrichpaul/deckofcards"
 )
 
-type NewDeckHandler struct {
+type NewHandler struct {
 	deckManager *deck.Manager
 }
 
-func CreateNewDeckHandler(manager *deck.Manager) *NewDeckHandler {
-	z := &NewDeckHandler{
+func CreateNewHandler(manager *deck.Manager) *NewHandler {
+	z := &NewHandler{
 		deckManager: manager,
 	}
 	return z
 }
 
-func (z *NewDeckHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (z *NewHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	deck := z.createDeck(z.getNewDeckQueryValues(r))
 	apiutilities.HandleResponse(w, deck)
 }
 
-func (z *NewDeckHandler) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *deckofcards.Deck) {
+func (z *NewHandler) createDeck(shuffle, jokers bool, amountOfDecks int) (deck *deckofcards.Deck) {
 	if shuffle {
 		if jokers {
 			deck = z.deckManager.RequestNumberOfShuffledDecksWithJokers(amountOfDecks)
@@ -41,7 +41,7 @@ func (z *NewDeckHandler) createDeck(shuffle, jokers bool, amountOfDecks int) (de
 	return
 }
 
-func (z *NewDeckHandler) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
+func (z *NewHandler) getNewDeckQueryValues(r *http.Request) (shuffle bool, jokers bool, amount int) {
 	amount = apiutilities.GetIntWithDefaultValueOfOne(r.URL.Query(), "amount")
 	jokers = apiutilities.GetBooleanValue(r.URL.Query(), "jokers")
 	shuffle = apiutilities.GetBooleanValue(r.URL.Query(), "shuffle")

@@ -27,12 +27,8 @@ func (z *Manager) RequestNewPile() *deckofcards.Pile {
 	return pile
 }
 
-//ShufflePile shuffles an existing pile with the given ID.
-func (z *Manager) ShufflePile(ID string) *deckofcards.Pile {
-	pile, ok := z.persistanceManger.RetrievePile(ID)
-	if !ok {
-		return nil
-	}
+//ReshufflePile shuffles an existing pile.
+func (z *Manager) ReshufflePile(pile *deckofcards.Pile) *deckofcards.Pile {
 	defer z.persistanceManger.PersistPile(pile)
 	pile = deckofcards.ShufflePile(pile)
 	return pile
@@ -114,4 +110,10 @@ func (z *Manager) FindPileByID(ID string) *deckofcards.Pile {
 		return nil
 	}
 	return pile
+}
+
+//DoesPileExist returns true if the pile with the given ID exists.
+func (z *Manager) DoesPileExist(ID string) bool {
+	_, ok := z.persistanceManger.RetrieveDeck(ID)
+	return ok
 }
