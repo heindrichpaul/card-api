@@ -21,15 +21,16 @@ type API struct {
 //NewPileAPI returns a pointer to a newly initialized pile.API.
 func NewPileAPI(mux *mux.Router, pileManager *pile.Manager) *API {
 	api := &API{
-		router:      mux.PathPrefix("/pile").Subrouter(),
-		pileManager: pileManager,
+		router:          mux.PathPrefix("/pile").Subrouter(),
+		pileManager:     pileManager,
+		newHandler:      handler.CreateNewHandler(pileManager),
+		retrieveHandler: handler.CreateRetrieveHandler(pileManager),
+		shuffleHandler:  handler.CreateShuffleHandler(pileManager),
 	}
 	api.getRoute = api.router.Methods("GET")
 	api.newSubRouter = api.router.PathPrefix("/new").Methods("GET").Subrouter()
 	api.shuffleSubRouter = api.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
-	api.newHandler = handler.CreateNewHandler(api.pileManager)
-	api.retrieveHandler = handler.CreateRetrieveHandler(api.pileManager)
-	api.shuffleHandler = handler.CreateShuffleHandler(api.pileManager)
+
 	return api
 }
 
