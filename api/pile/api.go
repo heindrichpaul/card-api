@@ -10,11 +10,13 @@ type handlers struct {
 	newHandler      *handler.NewHandler
 	retrieveHandler *handler.RetrieveHandler
 	shuffleHandler  *handler.ShuffleHandler
+	drawHandler     *handler.DrawHandler
 }
 
 type routers struct {
 	router           *mux.Router
 	newSubRouter     *mux.Router
+	drawSubRouter    *mux.Router
 	shuffleSubRouter *mux.Router
 }
 
@@ -31,6 +33,7 @@ func newRouters(mux *mux.Router) *routers {
 		router: mux.PathPrefix("/pile").Subrouter(),
 	}
 	r.newSubRouter = r.router.PathPrefix("/new").Methods("GET").Subrouter()
+	r.drawSubRouter = r.router.PathPrefix("/draw").Methods("GET").Subrouter()
 	r.shuffleSubRouter = r.router.PathPrefix("/shuffle").Methods("POST").Subrouter()
 	return r
 }
@@ -40,6 +43,7 @@ func newHandlers(pileManager *pile.Manager) *handlers {
 		newHandler:      handler.CreateNewHandler(pileManager),
 		retrieveHandler: handler.CreateRetrieveHandler(pileManager),
 		shuffleHandler:  handler.CreateShuffleHandler(pileManager),
+		drawHandler:     handler.CreateDrawHandler(pileManager),
 	}
 	return h
 }
@@ -59,7 +63,17 @@ func NewPileAPI(mux *mux.Router, pileManager *pile.Manager) *API {
 
 //Register registers all paths required by the pile.API.
 func (z *API) Register() {
-	z.getRoute.Path("/{id}").Handler(z.h.retrieveHandler)
+	z.registerViewPaths()
 	z.r.shuffleSubRouter.Handle("/{id}", z.h.shuffleHandler)
 	z.r.newSubRouter.Handle("/", z.h.newHandler)
+}
+
+func (z *API) registerViewPaths() {
+	z.getRoute.Path("/{id}").Handler(z.h.retrieveHandler)
+	z.getRoute.Path("/{id}").Handler(z.h.retrieveHandler).Queries("view", "{view}")
+}
+
+func (z *API) registerDrawPaths() {
+	z.r.drawSubRouter.Handle("/{id}", z.h.drawHandler)
+	z.r.drawSubRouter.Handle("/{id}", z.h.drawHandler).Queries("bottom", "{bottom}")
 }
